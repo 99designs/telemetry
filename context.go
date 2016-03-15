@@ -13,9 +13,12 @@ func NewContext(sinks ...Sink) *Context {
 
 // Subcontext creates a new context with the given tags
 func (c *Context) SubContext(tags ...string) *Context {
+	newTags := make([]string, len(c.tags), len(c.tags)+len(tags))
+	copy(newTags, c.tags)
+
 	return &Context{
 		sinks: c.sinks,
-		tags:  append(c.tags, tags...),
+		tags:  append(newTags, tags...),
 	}
 }
 
