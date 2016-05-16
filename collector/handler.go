@@ -10,8 +10,6 @@ import (
 	"github.com/99designs/telemetry"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
-	"net"
-	"strings"
 )
 
 const ContextKey = "telemetry_context"
@@ -21,12 +19,8 @@ func Gorilla(c *telemetry.Context, router *mux.Router, next http.Handler) http.H
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
-		// IPv6 addresses use colons, but they are the tag separator. Lets use dots instead.
-		ip := strings.Replace(getIp(r), ":", ".", -1)
-
 		routeContext := c.SubContext(
 			"route:" + getRouteName(router, r),
-			"ip:" + ip,
 		)
 
 		context.Set(r, ContextKey, routeContext)
@@ -62,22 +56,6 @@ func getRouteName(router *mux.Router, r *http.Request) string {
 	} else {
 		return "unknown"
 	}
-}
-
-// getIp returns the last non-private X-Forwarded-For header otherwise the requests remote address
-func getIp(r *http.Request) string {
-	for _, xff := range r.Header["X-Forwarded-For"] {
-		addresses := strings.Split(strings.Replace(xff, " ", ",", -1), ",")
-
-		for i := len(addresses) -1 ; i >= 0; i-- {
-			xffIp := net.ParseIP(addresses[i])
-			if xffIp != nil && !privateIP(xffIp) {
-				return xffIp.String()
-			}
-		}
-	}
-
-	return net.ParseIP(strings.Split(r.RemoteAddr, ":")[0]).String()
 }
 
 // There appears to be no good way determine the http code
