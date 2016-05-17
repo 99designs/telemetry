@@ -21,9 +21,7 @@ func TestRouteContext(t *testing.T) {
 	handler = Gorilla(telemetry.NewContext(s), router, handler)
 	router.Handle("/", handler).Name("test.route")
 
-	r := mustRequest("/")
-	r.Header.Add("X-Forwarded-For", "8.8.8.8")
-	router.ServeHTTP(&httptest.ResponseRecorder{}, r)
+	doTestGet(router, "/")
 
 	if len(s) != 3 {
 		t.Error("Not enough metrics logged")
@@ -33,29 +31,8 @@ func TestRouteContext(t *testing.T) {
 		t.Error("Test metric was not logged with route tag")
 	}
 
-	if s["app.request.duration"].Tags[1] != "ip:8.8.8.8" {
-		t.Errorf("app request was not logged with an ip address")
-	}
-
-	if s["app.request.duration"].Tags[2] != "status:200" {
+	if s["app.request.duration"].Tags[1] != "status:200" {
 		t.Errorf("app request duration was not logged with a status")
-	}
-}
-
-func TestGetIp(t *testing.T) {
-	checks := map[string]string {
-		"8.8.8.8,10.0.0.1": "8.8.8.8",
-		"8.8.8.8,8.8.4.4": "8.8.4.4",
-		"8.8.8.8 8.8.4.4": "8.8.4.4",
-	}
-
-	for xff, expected := range checks {
-		r := mustRequest("/")
-		r.Header.Add("X-Forwarded-for", xff)
-
-		if getIp(r) != expected {
-			t.Errorf("Incorrect ip returned, expected %s got %s", expected, getIp(r))
-		}
 	}
 }
 
@@ -67,10 +44,10 @@ func TestRouteContextWithUnknownRequest(t *testing.T) {
 	}
 }
 
-func mustRequest(path string) *http.Request {
+func doTestGet(router *mux.Router, path string) {
 	r, err := http.NewRequest("GET", path, nil)
 	if err != nil {
 		panic(err)
 	}
-	return r
+	router.ServeHTTP(&httptest.ResponseRecorder{}, r)
 }
