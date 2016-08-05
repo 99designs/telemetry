@@ -10,6 +10,10 @@ import (
 	"github.com/99designs/telemetry"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
+	"bufio"
+	"net"
+	"errors"
+	"reflect"
 )
 
 const ContextKey = "telemetry_context"
@@ -81,4 +85,12 @@ func (w *responseWriterWithCode) Flush() {
 	if f, ok := w.next.(http.Flusher); ok {
 		f.Flush()
 	}
+}
+
+func (w *responseWriterWithCode) Hijack() (net.Conn, *bufio.ReadWriter, error) {
+	if f, ok := w.next.(http.Hijacker); ok {
+		return f.Hijack()
+	}
+
+	return nil, nil, errors.New("Hijack not supported on " + reflect.TypeOf(w.next).String())
 }
