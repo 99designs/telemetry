@@ -76,3 +76,9 @@ func (w *responseWriterWithCode) WriteHeader(code int) {
 	w.code = code
 	w.next.WriteHeader(code)
 }
+
+func (w *responseWriterWithCode) Flush() {
+	if f, ok := w.next.(http.Flusher); ok {
+		f.Flush()
+	}
+}
