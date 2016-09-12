@@ -38,6 +38,7 @@ func (d *RuntimeCollector) Start() {
 
 			d.context.Gauge("app.runtime.goroutines", float64(runtime.NumGoroutine()))
 			d.context.Gauge("app.runtime.cgo_calls", float64(runtime.NumCgoCall()))
+			d.context.Gauge("app.hosts", float64(1))
 
 			d.context.Gauge("app.mem.gc.pause_total_ns", float64(mem.PauseTotalNs))
 			d.context.Gauge("app.mem.gc.num", float64(mem.NumGC))
