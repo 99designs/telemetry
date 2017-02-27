@@ -1,25 +1,23 @@
-package collector
+package gorilla
 
 import (
+	"bufio"
+	"errors"
+	"net"
 	"net/http"
+	"reflect"
 	"strconv"
 	"time"
-)
 
-import (
 	"github.com/99designs/telemetry"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
-	"bufio"
-	"net"
-	"errors"
-	"reflect"
 )
 
 const ContextKey = "telemetry_context"
 
 // Handler returns middleware to collect request duration/exit status
-func Gorilla(c *telemetry.Context, router *mux.Router, next http.Handler) http.Handler {
+func Handler(c *telemetry.Context, router *mux.Router, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
