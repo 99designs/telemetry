@@ -1,4 +1,4 @@
-package collector
+package gorilla
 
 import (
 	"net/http"
@@ -18,7 +18,7 @@ func TestRouteContext(t *testing.T) {
 	})
 
 	s := sink.Test()
-	handler = Gorilla(telemetry.NewContext(s), router, handler)
+	handler = Handler(telemetry.NewContext(s), router, handler)
 	router.Handle("/", handler).Name("test.route")
 
 	doTestGet(router, "/")

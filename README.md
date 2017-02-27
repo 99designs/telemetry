@@ -32,8 +32,8 @@ gorilla
 router := mux.NewRouter()
 router.Handle("/", handler).Name("test.route")
 
-handler := collector.Gorilla(t, router, func(w http.ResponseWriter, r *http.Request) {
+handler := gorilla.Handler(t, router, func(w http.ResponseWriter, r *http.Request) {
     // You can log your own metrics from any handler after this.
-    ContextForRequest(r).Gauge("test_metric", 2)
+    gorilla.ContextForRequest(r).Gauge("test_metric", 2)
 })
 ```
