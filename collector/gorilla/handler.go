@@ -1,15 +1,12 @@
 package gorilla
 
 import (
-	"bufio"
-	"errors"
-	"net"
 	"net/http"
-	"reflect"
 	"strconv"
 	"time"
 
 	"github.com/99designs/telemetry"
+	"github.com/99designs/telemetry/collector"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 )
@@ -27,11 +24,11 @@ func Handler(c *telemetry.Context, router *mux.Router, next http.Handler) http.H
 
 		context.Set(r, ContextKey, routeContext)
 
-		wWrapper := &responseWriterWithCode{w, http.StatusOK}
+		wWrapper := collector.NewInterceptor(w)
 		next.ServeHTTP(wWrapper, r)
 
 		completedRouteContext := routeContext.SubContext(
-			"status:" + strconv.Itoa(wWrapper.code),
+			"status:" + strconv.Itoa(wWrapper.Code),
 		)
 
 		diff := time.Now().Sub(start).Seconds()
@@ -58,37 +55,4 @@ func getRouteName(router *mux.Router, r *http.Request) string {
 	} else {
 		return "unknown"
 	}
-}
-
-// There appears to be no good way determine the http code
-// from the writer.
-type responseWriterWithCode struct {
-	next http.ResponseWriter
-	code int
-}
-
-func (w *responseWriterWithCode) Header() http.Header {
-	return w.next.Header()
-}
-
-func (w *responseWriterWithCode) Write(b []byte) (int, error) {
-	return w.next.Write(b)
-}
-func (w *responseWriterWithCode) WriteHeader(code int) {
-	w.code = code
-	w.next.WriteHeader(code)
-}
-
-func (w *responseWriterWithCode) Flush() {
-	if f, ok := w.next.(http.Flusher); ok {
-		f.Flush()
-	}
-}
-
-func (w *responseWriterWithCode) Hijack() (net.Conn, *bufio.ReadWriter, error) {
-	if f, ok := w.next.(http.Hijacker); ok {
-		return f.Hijack()
-	}
-
-	return nil, nil, errors.New("Hijack not supported on " + reflect.TypeOf(w.next).String())
 }
