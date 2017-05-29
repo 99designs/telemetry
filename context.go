@@ -1,5 +1,23 @@
 package telemetry
 
+import "context"
+
+type contextKey struct{}
+
+var telemetryKey = &contextKey{}
+
+func FromContext(ctx context.Context) *Context {
+	c, ok := ctx.Value(telemetryKey).(*Context)
+	if !ok {
+		return &Context{}
+	}
+	return c
+}
+
+func WithTelemetry(ctx context.Context, tel *Context) context.Context {
+	return context.WithValue(ctx, telemetryKey, tel)
+}
+
 type Context struct {
 	sinks []Sink
 	tags  []string
