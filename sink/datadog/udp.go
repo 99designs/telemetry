@@ -1,4 +1,4 @@
-package sink
+package datadog
 
 import (
 	"log"
@@ -11,7 +11,8 @@ type DatadogSink struct {
 	god *godspeed.Godspeed
 }
 
-func Datadog(host string, port int) (telemetry.Sink, error) {
+// UDP pushes metrics to local dogstatsd / datadog agent
+func UDP(host string, port int) (telemetry.Sink, error) {
 	god, err := godspeed.New(host, port, false)
 	if err != nil {
 		return nil, err
