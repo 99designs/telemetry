@@ -36,6 +36,9 @@ func TestHTTPIntegration(t *testing.T) {
 	ctx := telemetry.NewContext(sink).SubContext("env:test", "app:telemetry")
 
 	collector.Runtime(ctx)
+	collector.CPU(ctx)
+	collector.Mem(ctx)
+	collector.Disk(ctx, "/")
 
 	for {
 		ctx.Histogram("telemetry.test.hist", rand.Float64())
