@@ -7,9 +7,11 @@ import (
 	"strconv"
 	"time"
 
+	"strings"
+
 	"github.com/99designs/telemetry"
 	"github.com/99designs/telemetry/collector"
-	"github.com/pressly/chi"
+	"github.com/go-chi/chi"
 )
 
 func Middleware(c *telemetry.Context) func(http.Handler) http.Handler {
@@ -38,6 +40,10 @@ func getRouteName(r *http.Request) string {
 	patterns := chi.RouteContext(r.Context()).RoutePatterns
 	for i, r := range patterns {
 		// Strip the wildcard/pattern match off everything bust the last prefix match.
+		r = strings.NewReplacer(
+			"{", ":",
+			"}", ":",
+		).Replace(r)
 		if i != len(patterns)-1 {
 			buf.WriteString(filepath.Dir(r))
 		} else {
