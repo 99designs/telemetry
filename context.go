@@ -1,5 +1,23 @@
 package telemetry
 
+import "context"
+
+type contextKey struct{}
+
+var telemetryKey = &contextKey{}
+
+func FromContext(ctx context.Context) *Context {
+	c, ok := ctx.Value(telemetryKey).(*Context)
+	if !ok {
+		return &Context{}
+	}
+	return c
+}
+
+func WithTelemetry(ctx context.Context, tel *Context) context.Context {
+	return context.WithValue(ctx, telemetryKey, tel)
+}
+
 type Context struct {
 	sinks []Sink
 	tags  []string
@@ -24,6 +42,13 @@ func (c *Context) SubContext(tags ...string) *Context {
 
 func (c *Context) Tags() []string {
 	return c.tags
+}
+
+// AddTags adds additional tags to the current context *WARNING* this doesn't retroactively apply to previous calls
+func (c *Context) AddTags(tags ...string) {
+	newTags := make([]string, len(c.tags), len(c.tags)+len(tags))
+	copy(newTags, c.tags)
+	c.tags = append(newTags, tags...)
 }
 
 // AddSink adds a new sink destination
