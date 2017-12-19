@@ -44,6 +44,13 @@ func (c *Context) Tags() []string {
 	return c.tags
 }
 
+// AddTags adds additional tags to the current context *WARNING* this doesn't retroactively apply to previous calls
+func (c *Context) AddTags(tags ...string) {
+	newTags := make([]string, len(c.tags), len(c.tags)+len(tags))
+	copy(newTags, c.tags)
+	c.tags = append(newTags, tags...)
+}
+
 // AddSink adds a new sink destination
 func (c *Context) AddSink(sinks ...Sink) {
 	c.sinks = append(c.sinks, sinks...)
