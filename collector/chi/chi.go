@@ -20,11 +20,14 @@ func Middleware(c *telemetry.Context) func(http.Handler) http.Handler {
 			start := time.Now()
 
 			wWrapper := collector.NewInterceptor(w)
-			next.ServeHTTP(wWrapper, r)
 
+			routeContext := c.SubContext()
+			r = r.WithContext(telemetry.WithTelemetry(r.Context(), routeContext))
+
+			next.ServeHTTP(wWrapper, r)
 			duration := time.Now().Sub(start).Seconds()
 
-			routeContext := c.SubContext(
+			routeContext.AddTags(
 				"route:"+getRouteName(r),
 				"status:"+strconv.Itoa(wWrapper.Code),
 			)
