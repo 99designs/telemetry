@@ -2,8 +2,6 @@ module github.com/99designs/telemetry
 
 go 1.12
 
-replace github.com/theckman/godspeed => github.com/theckman/godspeed-og v1.1.0
-
 require (
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/kr/pretty v0.2.0 // indirect
