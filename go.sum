@@ -9,6 +9,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/testify v1.1.4 h1:ToftOQTytwshuOSj6bDSolVUa3GINfJP/fg3OkkOzQQ=
 github.com/stretchr/testify v1.1.4/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
+github.com/theckman/godspeed v1.1.0 h1:PJyNf4xeeAMTxf2VFPMBLEEeETTcx804FkIxhd8pkfY=
+github.com/theckman/godspeed v1.1.0/go.mod h1:HbvX1ULDanALaHLD1Q1jwxL3THjMTn6KgpTSZ1MTvMQ=
 github.com/theckman/godspeed-og v1.1.0 h1:7L6E9jgRVRMhZu9g9sZg9PTzm+Zz0smEF6H2KkkDp3U=
 github.com/theckman/godspeed-og v1.1.0/go.mod h1:lk8ZMPzo59IEVUYrGibjoiZXnmsBidyhNIBTJZ5AdA8=
 gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 h1:YR8cESwS4TdDjEe65xsg0ogRM/Nc3DYOhEAlW+xobZo=

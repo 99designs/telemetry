@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/99designs/telemetry"
-	"github.com/theckman/godspeed"
+	"github.com/theckman/godspeed-og"
 )
 
 type DatadogSink struct {
